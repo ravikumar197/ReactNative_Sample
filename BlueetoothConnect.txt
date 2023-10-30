@@ -1,0 +1,45 @@
+import CoreBluetooth
+
+class ViewController: UIViewController {
+
+  private var centralManager: CBCentralManager!
+  private var connectedPeripheral: CBPeripheral?
+
+  override func viewDidLoad() {
+    super.viewDidLoad()
+
+    centralManager = CBCentralManager(delegate: self, queue: nil)
+  }
+
+  func scanForDevices() {
+    centralManager.scanForPeripherals(withServices: nil, options: nil)
+  }
+
+  func connectToDevice(peripheral: CBPeripheral) {
+    centralManager.connect(peripheral, options: nil)
+  }
+
+  func disconnectDevice() {
+    centralManager.cancelPeripheralConnection(connectedPeripheral)
+  }
+}
+
+extension ViewController: CBCentralManagerDelegate {
+
+  func centralManagerDidDiscover(_ central: CBCentralManager, peripheral: CBPeripheral, advertisementData: [String: Any], rssi RSSI: NSNumber) {
+    // Check if the discovered device is the one you want to connect to.
+    if peripheral.name == "My Bluetooth Device" {
+      connectToDevice(peripheral: peripheral)
+    }
+  }
+
+  func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
+    // The device has been connected.
+    connectedPeripheral = peripheral
+  }
+
+  func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
+    // The device has been disconnected.
+    connectedPeripheral = nil
+  }
+}
