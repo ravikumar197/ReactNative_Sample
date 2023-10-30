@@ -1,0 +1,39 @@
+import React, { useState, useEffect } from "react";
+import { NfcManager } from "react-native-nfc-manager";
+
+const App = () => {
+  const [connectedDevice, setConnectedDevice] = useState(null);
+
+  useEffect(() => {
+    NfcManager.start({ showAlert: false }).then(() => {
+      console.log("NfcManager initialized");
+      NfcManager.requestTechnology(NfcManager.Tech.NDEF).then(() => {
+        console.log("NDEF technology requested");
+      });
+    });
+
+    NfcManager.onTagDiscovered = (tag) => {
+      setConnectedDevice(tag);
+    };
+
+    return () => {
+      NfcManager.stop();
+    };
+  }, []);
+
+  if (connectedDevice) {
+    return (
+      <View>
+        <Text>Connected device: {connectedDevice.name}</Text>
+      </View>
+    );
+  } else {
+    return (
+      <View>
+        <Text>No NFC device connected</Text>
+      </View>
+    );
+  }
+};
+
+export default App;
