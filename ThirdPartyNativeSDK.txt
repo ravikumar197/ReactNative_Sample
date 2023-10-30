@@ -1,0 +1,21 @@
+import React from "react";
+import { NativeModules } from "react-native";
+
+const MyThirdPartyNativeSDK = NativeModules.MyThirdPartyNativeSDK;
+
+const App = () => {
+  const [message, setMessage] = useState("");
+
+  const sendMessage = () => {
+    MyThirdPartyNativeSDK.sendMessage("This is my message.");
+  };
+
+  return (
+    <View>
+      <Text>Message: {message}</Text>
+      <Button title="Send Message" onPress={sendMessage} />
+    </View>
+  );
+};
+
+export default App;
